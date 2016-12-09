@@ -6,6 +6,7 @@ import sys, getopt
 import time
 import argparse
 import socket
+import re
 
 dominant = { 
         'slot': '1',
@@ -18,7 +19,6 @@ dominant = {
         'mgmtUP':'1',
         'igmpUP':'1',
         'pppoeUP':'6',
-        'startOnuID': 15
     }
 
 jegeho = { 
@@ -32,7 +32,6 @@ jegeho = {
         'mgmtUP':'1',
         'igmpUP':'1',
         'pppoeUP':'4',
-        'startOnuID': 47
     }
 def check_arg(args=None):
 
@@ -78,7 +77,7 @@ def send_command(remote_conn, cmd):
     time.sleep(1)
     output = remote_conn.recv(1000)
     print output
-    return True
+    return output
 
 def connect(host, user, passwd):
     
@@ -103,6 +102,29 @@ def connect(host, user, passwd):
         sys.exit("Connection timeout")
         
 
+def find_last_onu(remote_conn, conf):
+    
+    slot = conf['slot']
+    pon = conf['pon']
+    lastonu = 01
+
+    cmd = "remote-eq/onu/show --slot=" + slot + " --port=" + pon
+    output = send_command(remote_conn, cmd)
+    
+    buf=StringIO.StringIO(output)
+
+    line = buf.read().split("\n")
+    onu = re.findall(r'\d+', line[-3])
+    onu.sort(key=int)
+
+    if len(onu) <= 2:
+            lastonu = 01
+    else:
+            lastonu = onu[-1]
+    return lastonu
+
+
+
 def create_commands(line,conf,onuid):
 
     sn = line
@@ -119,7 +141,7 @@ def create_commands(line,conf,onuid):
     pppoeUP = conf['pppoeUP']
 
 
-    create_onu = "remote-eq/discovery/create --serial-number=" + sn + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --admin=enable --profileID=" + profileID + " --register-type=serial-number"
+    create_onu = "remote-eq/discovery/create --serial-number=" + sn + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --admin=enable --profileID=" + profileID + " --register-type=serial-number --sw-upgrade-mode=auto"
     add_mgmt = "remote-eq/onu/services/add --serviceID=" + mgmtID + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + mgmtUP + " --admin=enable --ip-mgmt=enable --name=ip-mgmt --serviceID-onu=1"
     add_pppoe = "remote-eq/onu/services/add --serviceID=" + pppoeID + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
     add_igmp = "remote-eq/onu/services/add  --serviceID=" + igmpID + " --port=" + pon +  " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
@@ -142,16 +164,17 @@ def main():
     elif objectprofile == 'jegeho':
         conf = jegeho
     else:
-        print "Error"
+        print "No Object profile specified"
 
     ssh = connect(host, user, passwd)
     # Use invoke_shell to establish an 'interactive session'
     remote_conn = ssh.invoke_shell()
     print "Interactive SSH session established to %s\n" % host
     send_command(remote_conn,"\n")
-
     
-    onuid = conf['startOnuID']
+    lastonuid = find_last_onu(remote_conn, conf)
+    
+    onuid = int(lastonuid) + 1
 
     if serialnumber == None:
 
@@ -177,7 +200,7 @@ def main():
         send_command(remote_conn, add_igmp)
         send_command(remote_conn, add_mcast)
         send_command(remote_conn, add_mcast_pkg)
-       
+      
     remote_conn.close()
 
 if __name__ == "__main__":
