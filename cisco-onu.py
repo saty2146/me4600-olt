@@ -8,18 +8,32 @@ import argparse
 import socket
 
 dominant = { 
-        "pon" : "pon.7",
-        "profileID" : "4",
-        "pppoeID" : "7",
-        "mgmtID" : "1",
-        "igmpID" : "5",
-        "mcastID" : "6",
-        "mgmtUP": "1",
-        "igmpUP": "1",
-        "pppoeUP": "6",
-        "startOnuID" : "12"
+        'slot': '1',
+        'pon': 'pon.7',
+        'profileID': '4',
+        'pppoeID': '7',
+        'mgmtID': '1',
+        'igmpID': '5',
+        'mcastID': '6',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'6',
+        'startOnuID': 15
     }
 
+jegeho = { 
+        'slot': '3',
+        'pon': 'pon.7',
+        'profileID': '3',
+        'pppoeID': '2',
+        'mgmtID': '5',
+        'igmpID': '3',
+        'mcastID': '1',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+        'startOnuID': 47
+    }
 def check_arg(args=None):
 
     parser = argparse.ArgumentParser(description='Cisco OLT manipulator')
@@ -28,12 +42,12 @@ def check_arg(args=None):
                         help='OLT IP address', 
                         default='192.168.35.50')
     maingroup.add_argument('-u', '--user',
-                        help='OLT user name',
+                        help='OLT username',
                         default='admin')
     maingroup.add_argument('-p', '--passwd',
                         help='OLT password',
                         required='True')
-    maingroup.add_argument('-o', '--objectprofile',
+    maingroup.add_argument('-o', '--objectprofile', 
                         choices=['dominant','jegeho'],
                         help='OLT object profile',
                         required='True')
@@ -58,7 +72,7 @@ def check_arg(args=None):
 
 def send_command(remote_conn, cmd):
     
-    print "Sending cmd:\n" + cmd 
+    print "Sending cmd:\n" + cmd + "\n"
     cmd = cmd.rstrip()
     remote_conn.send(cmd + '\n')
     time.sleep(1)
@@ -92,7 +106,8 @@ def connect(host, user, passwd):
 def create_commands(line,conf,onuid):
 
     sn = line
-    onuid = onuid
+    onuid = str(onuid)
+    slot = conf['slot']
     pon = conf['pon']
     profileID = conf['profileID']
     pppoeID = conf['pppoeID']
@@ -104,12 +119,12 @@ def create_commands(line,conf,onuid):
     pppoeUP = conf['pppoeUP']
 
 
-    create_onu = "remote-eq/discovery/create --serial-number=" + sn + " --port=" + pon + " --onuID=" + onuid + " --admin=enable --profileID=" + profileID + " --register-type=serial-number"
-    add_mgmt = "remote-eq/onu/services/add --serviceID=" + mgmtID + " --port=" + pon + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + mgmtUP + " --admin=enable --ip-mgmt=enable --name=ip-mgmt --serviceID-onu=1"
-    add_pppoe = "remote-eq/onu/services/add --serviceID=" + pppoeID + " --port=" + pon + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
-    add_igmp = "remote-eq/onu/services/add  --serviceID=" + igmpID + " --port=" + pon + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
-    add_mcast = "remote-eq/onu/services/add --serviceID=" + mcastID + " --port=" + pon + " --onuID=" + onuid + " --add-onu-port=veip.1 --admin=enable --name=iptv-multicast --serviceID-onu=4"       
-    add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" + onuid + " --port=" + pon + " --serviceID-onu=3 --pkg-id=1"
+    create_onu = "remote-eq/discovery/create --serial-number=" + sn + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --admin=enable --profileID=" + profileID + " --register-type=serial-number"
+    add_mgmt = "remote-eq/onu/services/add --serviceID=" + mgmtID + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + mgmtUP + " --admin=enable --ip-mgmt=enable --name=ip-mgmt --serviceID-onu=1"
+    add_pppoe = "remote-eq/onu/services/add --serviceID=" + pppoeID + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
+    add_igmp = "remote-eq/onu/services/add  --serviceID=" + igmpID + " --port=" + pon +  " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
+    add_mcast = "remote-eq/onu/services/add --serviceID=" + mcastID + " --port=" + pon + " --slot=" + slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --admin=enable --name=iptv-multicast --serviceID-onu=4"       
+    add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" + onuid + " --port=" + pon + " --slot=" + slot + " --serviceID-onu=3 --pkg-id=1"
     
     return (create_onu,
             add_mgmt,
@@ -124,6 +139,8 @@ def main():
     
     if objectprofile == 'dominant':
         conf = dominant
+    elif objectprofile == 'jegeho':
+        conf = jegeho
     else:
         print "Error"
 
