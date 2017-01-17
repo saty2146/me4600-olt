@@ -201,8 +201,8 @@ def main():
     send_command(remote_conn,"\n")
     
     lastonuid = find_last_onu(remote_conn, conf)
-    #lastonuid = 38
-    
+    print lastonuid
+     
     onuid = int(lastonuid) + 1
 
     if serialnumber == None:
