@@ -22,15 +22,18 @@ def send_command(remote_conn, cmd=''):
 
     line = buf.read().split("\n")
     
-    row = line[-2].split('|')
+    row1 = line[-2].split('|')
+    row2 = line[-3].split('|')
+    row = row1 + row2
+
     is_error = next((s for s in row if 'Error' in s), None)    
     
     if is_error:
-	for p in row: print p,
+	print ', '.join(row)
 	sys.exit()
     else:
-	print " OK"
-    return output
+    	print "OK"
+    	return output
 
 def connect(host, user, passwd):
     
