@@ -8,14 +8,28 @@ import argparse
 import socket
 import re
 
-def send_command(remote_conn, cmd):
-    
-    print "Sending cmd:\n" + cmd + "\n"
+def send_command(remote_conn, cmd=''):
+    if not cmd:
+	print "Sending cmd: Enter\n"
+    else:
+    	print "Sending cmd: " + cmd + "\n"
     cmd = cmd.rstrip()
     remote_conn.send(cmd + '\n')
     time.sleep(1)
     output = remote_conn.recv(9000)
-    #print output
+    
+    buf=StringIO.StringIO(output)
+
+    line = buf.read().split("\n")
+    
+    row = line[-2].split('|')
+    is_error = next((s for s in row if 'Error' in s), None)    
+    
+    if is_error:
+	for p in row: print p,
+	sys.exit()
+    else:
+	print " OK"
     return output
 
 def connect(host, user, passwd):
