@@ -8,32 +8,11 @@ import sys
 import shutil
 
 date = datetime.datetime.today().strftime('%Y-%m-%d')
-filename = 'autobck_' + str(date)
 
-def check_arg(args=None):
-
-    parser = argparse.ArgumentParser(description='Cisco OLT backuper')
-    maingroup = parser.add_argument_group(title='required')
-    maingroup.add_argument('-u', '--user',
-                        help='OLT username',
-                        default='admin')
-    maingroup.add_argument('-p', '--passwd',
-                        help='OLT password',
-                        required='True')
-    maingroup.add_argument('-H', '--hostname',
-			help='Hostname',
-			required='True')
-    maingroup.add_argument('-t', '--tftp',
-                        help='TFTP server address',
-                        required='True')
-
-    results = parser.parse_args(args)
-
-    return (results.user,
-            results.passwd,
-            results.hostname,
-	    results.tftp)
-
+user = admin
+passwd = 'XXX'
+hostnamei = 'Hostname'
+tftp = '192.168.1.1'
 
 def find_bck(remote_conn,position='last'):
 
@@ -57,8 +36,6 @@ def find_bck(remote_conn,position='last'):
 
 def main():
     
-    user, passwd, hostname, tftp = check_arg(sys.argv[1:])
-    
     ssh = mymod.connect(hostname, user, passwd)
     # Use invoke_shell to establish an 'interactive session'
     remote_conn = ssh.invoke_shell()
@@ -77,8 +54,13 @@ def main():
     
     src_file = "/srv/tftp/" + last_bck
     dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
-	
-    shutil.copyfile(src_file, dst_file)
+    
+    print "Copping file %s to backup directory\n" % last_bck
+    try:
+	shutil.copyfile(src_file, dst_file)
+	print "OK"
+    except:
+	print "Error"
 
     remote_conn.close()
 
