@@ -34,7 +34,7 @@ def check_arg(args=None):
 	    results.tftp)
 
 
-def find_last_bck(remote_conn):
+def find_bck(remote_conn,position='last'):
 
     cmd = 'backup-manager/show'
     output = mymod.send_command(remote_conn, cmd)
@@ -42,8 +42,12 @@ def find_last_bck(remote_conn):
     buf=StringIO.StringIO(output)
 
     line = buf.read().split("\n")
-    lastline = line[-3]
-    row = line[-3].split('|')
+    
+    if position == 'last':
+    	row = line[-3].split('|')
+    else:
+    	row = line[6].split('|')
+	
     row = map(str.strip, row) 
     file_bck = row[1]
     
@@ -62,9 +66,14 @@ def main():
     create_bck = "backup-manager/create --description=auto-backup"
     output = mymod.send_command(remote_conn, create_bck)
     [mymod.send_command(remote_conn) for i in range(3)]
-    lastbck = find_last_bck(remote_conn)
-    download_bck = "backup-manager/export --local-file=" + lastbck + " --server-ip=" + tftp + " --server-port=69"
+    last_bck = find_bck(remote_conn)
+    download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + tftp + " --server-port=69"
     mymod.send_command(remote_conn, download_bck)
+    
+    first_bck = find_bck(remote_conn, 'first')
+    delete_bck = "backup-manager/remove --local-file=" + first_bck
+    mymod.send_command(remote_conn, delete_bck)
+
 
 
 if __name__ == "__main__":

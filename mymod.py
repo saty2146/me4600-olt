@@ -22,9 +22,7 @@ def send_command(remote_conn, cmd=''):
 
     line = buf.read().split("\n")
     
-    row1 = line[-2].split('|')
-    row2 = line[-3].split('|')
-    row = row1 + row2
+    row = line[-2].split('|')
 
     is_error = next((s for s in row if 'Error' in s), None)    
     
