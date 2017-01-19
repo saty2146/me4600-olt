@@ -9,9 +9,9 @@ import shutil
 
 date = datetime.datetime.today().strftime('%Y-%m-%d')
 
-user = admin
+user = 'admin'
 passwd = 'XXX'
-hostnamei = 'Hostname'
+hostname = 'Hostname'
 tftp = '192.168.1.1'
 
 def find_bck(remote_conn,position='last'):
