@@ -102,7 +102,7 @@ def main():
     # Use invoke_shell to establish an 'interactive session'
     remote_conn = ssh.invoke_shell()
     print "Interactive SSH session established to %s\n" % host
-    mymod.send_command(remote_conn,"\n")
+    mymod.send_command(remote_conn)
     
     lastonuid = mymod.find_last_onu(remote_conn, conf)
      
