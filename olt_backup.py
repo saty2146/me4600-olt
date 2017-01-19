@@ -5,6 +5,7 @@ import StringIO
 import argparse
 import datetime
 import sys
+import shutil
 
 date = datetime.datetime.today().strftime('%Y-%m-%d')
 filename = 'autobck_' + str(date)
@@ -73,8 +74,13 @@ def main():
     first_bck = find_bck(remote_conn, 'first')
     delete_bck = "backup-manager/remove --local-file=" + first_bck
     mymod.send_command(remote_conn, delete_bck)
+    
+    src_file = "/srv/tftp/" + last_bck
+    dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
+	
+    shutil.copyfile(src_file, dst_file)
 
-
+    remote_conn.close()
 
 if __name__ == "__main__":
     main()
