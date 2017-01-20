@@ -87,4 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Saty added
+onu_template.cfg
 backup/
