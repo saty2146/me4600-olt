@@ -10,9 +10,9 @@ import shutil
 date = datetime.datetime.today().strftime('%Y-%m-%d')
 
 user = 'admin'
-passwd = 'XXX'
-hostname = 'Hostname'
-tftp = '192.168.1.1'
+passwd = 'admin'
+hostname = '192.168.35.50'
+tftp = '192.168.1.100'
 
 def find_bck(remote_conn,position='last'):
 
@@ -23,16 +23,16 @@ def find_bck(remote_conn,position='last'):
 
     line = buf.read().split("\n")
     
-    if position == 'last':
-    	row = line[-3].split('|')
-    else:
-    	row = line[6].split('|')
-	
-    row = map(str.strip, row) 
-    file_bck = row[1]
-    
-    return file_bck
+    last_row = line[-3].split('|')
+    first_row = line[6].split('|')
 
+    last_row = map(str.strip, last_row)
+    first_row = map(str.strip, first_row)
+
+    last_bck = last_row[1]
+    first_bck = first_row[1]
+
+    return (last_bck, first_bck)
 
 def main():
     
@@ -44,11 +44,11 @@ def main():
     create_bck = "backup-manager/create --description=auto-backup"
     output = mymod.send_command(remote_conn, create_bck)
     [mymod.send_command(remote_conn) for i in range(3)]
-    last_bck = find_bck(remote_conn)
+    last_bck, first_bck = find_bck(remote_conn)    
+    
     download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + tftp + " --server-port=69"
     mymod.send_command(remote_conn, download_bck)
     
-    first_bck = find_bck(remote_conn, 'first')
     delete_bck = "backup-manager/remove --local-file=" + first_bck
     mymod.send_command(remote_conn, delete_bck)
     
