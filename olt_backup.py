@@ -7,8 +7,6 @@ import datetime
 import sys
 import shutil
 
-date = datetime.datetime.today().strftime('%Y-%m-%d')
-
 user = 'admin'
 passwd = 'admin'
 hostname = '192.168.35.50'
