@@ -105,7 +105,6 @@ def main():
     mymod.send_command(remote_conn)
     
     lastonuid = mymod.find_last_onu(remote_conn, conf)
-     
     onuid = int(lastonuid) + 1
 
     if serialnumber == None:

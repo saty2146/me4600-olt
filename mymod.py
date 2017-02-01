@@ -24,7 +24,7 @@ def send_command(remote_conn, cmd=''):
     
     row = line[-2].split('|')
 
-    is_error = next((s for s in row if 'Error' in s), None)    
+    is_error = next((s for s in row if ('Error' in s or 'ERR' in s)), None)    
     
     if is_error:
 	print ', '.join(row)
