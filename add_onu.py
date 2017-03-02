@@ -8,48 +8,7 @@ import time
 import argparse
 import socket
 import re
-
-dominant = {
-        'host': '192.168.35.50',
-        'slot': '1',
-        'pon': 'pon.7',
-        'profileID': '4',
-        'pppoeID': '7',
-        'mgmtID': '1',
-        'igmpID': '5',
-        'mcastID': '6',
-        'mgmtUP':'1',
-        'igmpUP':'1',
-        'pppoeUP':'6',
-    }
-
-jegeho_dole = { 
-        'host': '10.4.1.150',
-        'slot': '3',
-        'pon': 'pon.7',
-        'profileID': '3',
-        'pppoeID': '2',
-        'mgmtID': '5',
-        'igmpID': '3',
-        'mcastID': '1',
-        'mgmtUP':'1',
-        'igmpUP':'1',
-        'pppoeUP':'4',
-    }
-
-jegeho_hore = { 
-        'host': '10.4.1.150',
-        'slot': '3',
-        'pon': 'pon.8',
-        'profileID': '3',
-        'pppoeID': '2',
-        'mgmtID': '5',
-        'igmpID': '3',
-        'mcastID': '1',
-        'mgmtUP':'1',
-        'igmpUP':'1',
-        'pppoeUP':'4',
-    }
+from myobject import dominant, jegeho_dole, jegeho_hore, slnecnice_3etapa_B1_B2, slnecnice_3etapa_B3_B4
 
 def check_arg(args=None):
 
@@ -62,7 +21,7 @@ def check_arg(args=None):
                         help='OLT password',
                         required='True')
     maingroup.add_argument('-o', '--objectprofile', 
-                        choices=['dominant','jegeho_dole','jegeho_hore'],
+                        choices=['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4'],
                         help='OLT object profile',
                         required='True')
     exgroup = parser.add_argument_group(title='one or the other')
@@ -94,6 +53,10 @@ def main():
         conf = jegeho_dole
     elif objectprofile == 'jegeho_hore':
         conf = jegeho_hore
+    elif objectprofile == 'slnecnice_3etapa_B1_B2':
+        conf = slnecnice_3etapa_B1_B2
+    elif objectprofile == 'slnecnice_3etapa_B3_B4':
+        conf = slnecnice_3etapa_B3_B4
     else:
         print "No Object profile specified"
 
