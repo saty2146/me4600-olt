@@ -6,7 +6,7 @@ import sys
 
 user = 'admin'
 passwd = 'XXX'
-hostname = '192.168.35.50'
+hostname = '192.168.1.1'
 
 
 def check_arg(args=None):
@@ -53,7 +53,7 @@ def main():
         output = mymod.send_command(remote_conn, send_reboot)
         mymod.send_command(remote_conn, send_confirm)
     else:
-        send_reboot = "equipment/boards/reboot --slot=3"
+        send_reboot = "equipment/boards/reboot --slot=" + slot
         output = mymod.send_command(remote_conn, send_reboot)
         mymod.send_command(remote_conn, send_confirm)
        
