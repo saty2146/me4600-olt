@@ -28,6 +28,34 @@ slnecnice_3etapa_B3_B4 = {
         'pppoeUP':'4',
     }
 
+slnecnice_3etapa_B5_B6 = {
+        'host': '192.168.35.51',
+        'slot': '1',
+        'pon': 'pon.3',
+        'profileID': '3',
+        'pppoeID': '4',
+        'mgmtID': '1',
+        'igmpID': '2',
+        'mcastID': '3',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+    }
+
+slnecnice_3etapa_C1_C2 = {
+        'host': '192.168.35.51',
+        'slot': '1',
+        'pon': 'pon.4',
+        'profileID': '3',
+        'pppoeID': '4',
+        'mgmtID': '1',
+        'igmpID': '2',
+        'mcastID': '3',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+    }
+
 dominant = {
         'host': '192.168.35.50',
         'slot': '1',
