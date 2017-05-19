@@ -8,7 +8,8 @@ import time
 import argparse
 import socket
 import re
-from myobject import dominant, jegeho_dole, jegeho_hore, slnecnice_3etapa_B1_B2, slnecnice_3etapa_B3_B4
+#from myobject import dominant, jegeho_dole, jegeho_hore, slnecnice_3etapa_B1_B2, slnecnice_3etapa_B3_B4
+from myobject import *
 
 def check_arg(args=None):
 
@@ -21,7 +22,7 @@ def check_arg(args=None):
                         help='OLT password',
                         required='True')
     maingroup.add_argument('-o', '--objectprofile', 
-                        choices=['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4'],
+                        choices=['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl'],
                         help='OLT object profile',
                         required='True')
     exgroup = parser.add_argument_group(title='one or the other')
@@ -57,6 +58,8 @@ def main():
         conf = slnecnice_3etapa_B1_B2
     elif objectprofile == 'slnecnice_3etapa_B3_B4':
         conf = slnecnice_3etapa_B3_B4
+    elif objectprofile == 'primyte_1etapa_1vl':
+        conf = primyte_1etapa_1vl
     else:
         print "No Object profile specified"
 

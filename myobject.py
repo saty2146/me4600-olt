@@ -1,5 +1,19 @@
 #!/usr/bin/python
 
+primyte_1etapa_1vl = {
+        'host': '192.168.82.19',
+        'slot': '1',
+        'pon': 'pon.1',
+        'profileID': '3',
+        'pppoeID': '3',
+        'mgmtID': '4',
+        'igmpID': '2',
+        'mcastID': '1',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+    }
+
 slnecnice_3etapa_B1_B2 = {
         'host': '192.168.35.51',
         'slot': '1',
