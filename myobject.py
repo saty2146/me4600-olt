@@ -1,4 +1,7 @@
 #!/usr/bin/python
+"""
+Define basic parameter IDs for objects
+"""
 
 primyte_1etapa_1vl = {
         'host': '192.168.82.19',
@@ -19,6 +22,34 @@ slnecnice_3etapa_B1_B2 = {
         'slot': '1',
         'pon': 'pon.1',
         'profileID': '3',
+        'pppoeID': '4',
+        'mgmtID': '1',
+        'igmpID': '2',
+        'mcastID': '3',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+    }
+
+shc3_olt_pon7 = {
+        'host': '192.168.35.51',
+        'slot': '1',
+        'pon': 'pon.7',
+        'profileID': '3',
+        'pppoeID': '4',
+        'mgmtID': '1',
+        'igmpID': '2',
+        'mcastID': '3',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+    }
+
+shc3_olt_pon8 = {
+        'host': '192.168.35.51',
+        'slot': '1',
+        'pon': 'pon.8',
+        'profileID': '4',
         'pppoeID': '4',
         'mgmtID': '1',
         'igmpID': '2',

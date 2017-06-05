@@ -8,7 +8,6 @@ import time
 import argparse
 import socket
 import re
-#from myobject import dominant, jegeho_dole, jegeho_hore, slnecnice_3etapa_B1_B2, slnecnice_3etapa_B3_B4
 from myobject import *
 
 def check_arg(args=None):
@@ -22,7 +21,7 @@ def check_arg(args=None):
                         help='OLT password',
                         required='True')
     maingroup.add_argument('-o', '--objectprofile', 
-                        choices=['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl'],
+                        choices=['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8'],
                         help='OLT object profile',
                         required='True')
     exgroup = parser.add_argument_group(title='one or the other')
@@ -60,6 +59,10 @@ def main():
         conf = slnecnice_3etapa_B3_B4
     elif objectprofile == 'primyte_1etapa_1vl':
         conf = primyte_1etapa_1vl
+    elif objectprofile == 'shc3_olt_pon7':
+        conf = shc3_olt_pon7
+    elif objectprofile == 'shc3_olt_pon8':
+        conf = shc3_olt_pon8
     else:
         print "No Object profile specified"
 
@@ -67,11 +70,9 @@ def main():
     ssh = mymod.connect(host, user, passwd)
     # Use invoke_shell to establish an 'interactive session'
     remote_conn = ssh.invoke_shell()
-    print "Interactive SSH session established to %s\n" % host
     mymod.send_command(remote_conn)
     
-    lastonuid = mymod.find_last_onu(remote_conn, conf)
-    onuid = int(lastonuid) + 1
+    onuid = mymod.find_next_onu(remote_conn, conf)
 
     if serialnumber == None:
 
