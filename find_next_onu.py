@@ -28,11 +28,12 @@ conf = slnecnice_3etapa_B1_B2
 #
 
 def main():
-
+    
     ssh = mymod.connect(hostname, user, passwd)
     remote_conn = ssh.invoke_shell()
-    mymod.send_command(remote_conn)
-    output = mymod.find_next_onu(remote_conn, conf)
+    olt = mymod.Olt()
+    olt.send_command(remote_conn)
+    output = olt.find_next_onu(remote_conn, conf)
     print output
 
     remote_conn.close()
