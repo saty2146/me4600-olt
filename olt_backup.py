@@ -6,49 +6,62 @@ import argparse
 import datetime
 import sys
 import shutil
+import re
 
 user = 'admin'
-passwd = 'admin'
-hostname = '192.168.35.50'
-tftp = '192.168.1.100'
+passwd = 'XXX'
+hostname = '192.168.35.51'
+tftp = '192.168.35.51'
 
-def find_bck(remote_conn,position='last'):
+def find_bck(remote_conn):
 
     cmd = 'backup-manager/show'
     output = mymod.send_command(remote_conn, cmd)
-
+    backups = []
+    
     buf=StringIO.StringIO(output)
 
-    line = buf.read().split("\n")
-    
-    last_row = line[-3].split('|')
-    first_row = line[6].split('|')
+    lines = buf.read().split("\n")
+    file_regex = re.compile(r".*({}).*".format('file'))
 
-    last_row = map(str.strip, last_row)
-    first_row = map(str.strip, first_row)
+    for line in lines:
+        mo_bck = file_regex.search(line)
+        if mo_bck:
+            filename = mo_bck.group().split('|')[1].strip()
+            backups.append(filename)
+        else:
+            pass
 
-    last_bck = last_row[1]
-    first_bck = first_row[1]
-
-    return (last_bck, first_bck)
+    return backups
 
 def main():
     
     ssh = mymod.connect(hostname, user, passwd)
-    # Use invoke_shell to establish an 'interactive session'
     remote_conn = ssh.invoke_shell()
-    print "Interactive SSH session established to %s\n" % hostname
     mymod.send_command(remote_conn)
+
+    backups = find_bck(remote_conn)
+
     create_bck = "backup-manager/create --description=auto-backup"
-    output = mymod.send_command(remote_conn, create_bck)
-    [mymod.send_command(remote_conn) for i in range(3)]
-    last_bck, first_bck = find_bck(remote_conn)    
-    
+
+    if backups:
+        if len(backups) >= 10:
+
+            #delete first backup
+            delete_bck = "backup-manager/remove --local-file=" + backups[0]
+            mymod.send_command(remote_conn, delete_bck)
+        else:
+            pass
+
+        #create new backup
+        mymod.send_command(remote_conn, create_bck)
+        [mymod.send_command(remote_conn) for i in range(3)]
+
+    last_bck = find_bck(remote_conn)[-1]
+
+   #upload to TFTP server 
     download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + tftp + " --server-port=69"
     mymod.send_command(remote_conn, download_bck)
-    
-    delete_bck = "backup-manager/remove --local-file=" + first_bck
-    mymod.send_command(remote_conn, delete_bck)
     
     src_file = "/srv/tftp/" + last_bck
     dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
