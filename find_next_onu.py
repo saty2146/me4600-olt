@@ -12,7 +12,7 @@ from myobject import *
 
 
 user = 'admin'
-passwd = 'XXX'
+passwd = 'LedaMetis2012'
 hostname = '192.168.35.51'
 
 #define custom conf dictionary

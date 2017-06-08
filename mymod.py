@@ -19,13 +19,14 @@ class Olt:
         self.nextonu = 0
         self.onu_id_list = []
 
-        cmd = "remote-eq/discovery/show --slot=" + self.slot + " --port=" + self.pon
-        output = self.send_command(remote_conn, cmd)
+        self.cmd = "remote-eq/discovery/show --slot=" + self.slot + " --port=" + self.pon
+        self.output = self.send_command(remote_conn, cmd)
 
         buf=StringIO.StringIO(output)
 
         lines = buf.read().split("\n")
         slot_regex = re.compile(r".*({}).*".format('PON'))
+
         for line in lines[3:]:
             mo_slot = slot_regex.search(line)
             if mo_slot:
@@ -36,12 +37,12 @@ class Olt:
                     pass
 
         if len(self.onu_id_list) == 0:
-            nextonu = 0
+            self.nextonu = 0
         else:
             self.onu_id_list.sort(key=int)
-            nextonu = self.onu_id_list[-1] + 1
+            self.nextonu = self.onu_id_list[-1] + 1
 
-        return nextonu
+        return self.nextonu
 
     def send_command(self, remote_conn, cmd=''):
         if not cmd:

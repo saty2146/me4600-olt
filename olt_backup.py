@@ -8,8 +8,8 @@ import sys
 import shutil
 
 user = 'admin'
-passwd = 'admin'
-hostname = '192.168.35.50'
+passwd = 'xxx'
+hostname = '10.4.1.150'
 tftp = '192.168.1.100'
 
 def find_bck(remote_conn,position='last'):
