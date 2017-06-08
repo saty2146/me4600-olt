@@ -7,11 +7,9 @@ import datetime
 import sys
 import shutil
 import re
+from creds import *
 
-user = 'admin'
-passwd = 'XXX'
-hostname = '192.168.35.51'
-tftp = '192.168.35.51'
+TFTP = '192.168.1.1'
 
 def find_bck(remote_conn):
 
@@ -35,45 +33,50 @@ def find_bck(remote_conn):
     return backups
 
 def main():
-    
-    ssh = mymod.connect(hostname, user, passwd)
-    remote_conn = ssh.invoke_shell()
-    mymod.send_command(remote_conn)
 
-    backups = find_bck(remote_conn)
+    for hostname in olts.keys():
+        host = olts[hostname]['host']
+        user = olts[hostname]['user']
+        passwd = olts[hostname]['passwd']
 
-    create_bck = "backup-manager/create --description=auto-backup"
+        ssh = mymod.connect(host, user, passwd)
+        remote_conn = ssh.invoke_shell()
+        mymod.send_command(remote_conn)
 
-    if backups:
-        if len(backups) >= 10:
+        backups = find_bck(remote_conn)
 
-            #delete first backup
-            delete_bck = "backup-manager/remove --local-file=" + backups[0]
-            mymod.send_command(remote_conn, delete_bck)
-        else:
-            pass
+        create_bck = "backup-manager/create --description=auto-backup"
+
+        if backups:
+            if len(backups) >= 10:
+
+                #delete first backup
+                delete_bck = "backup-manager/remove --local-file=" + backups[0]
+                mymod.send_command(remote_conn, delete_bck)
+            else:
+                pass
 
         #create new backup
         mymod.send_command(remote_conn, create_bck)
         [mymod.send_command(remote_conn) for i in range(3)]
 
-    last_bck = find_bck(remote_conn)[-1]
+        last_bck = find_bck(remote_conn)[-1]
 
-   #upload to TFTP server 
-    download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + tftp + " --server-port=69"
-    mymod.send_command(remote_conn, download_bck)
-    
-    src_file = "/srv/tftp/" + last_bck
-    dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
-    
-    print "Copping file %s to backup directory\n" % last_bck
-    try:
-	shutil.copyfile(src_file, dst_file)
-	print "OK"
-    except:
-	print "Error"
+       #upload to TFTP server 
+        download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + TFTP + " --server-port=69"
+        mymod.send_command(remote_conn, download_bck)
+        
+        src_file = "/srv/tftp/" + last_bck
+        dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
+        
+        print "Copping file %s to backup directory\n" % last_bck
+        try:
+            shutil.copyfile(src_file, dst_file)
+            print "OK"
+        except:
+            print "Error"
 
-    remote_conn.close()
+        remote_conn.close()
 
 if __name__ == "__main__":
     main()

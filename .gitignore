@@ -91,3 +91,4 @@ ENV/
 # Saty added
 onu_template.cfg
 backup/
+creds.py
