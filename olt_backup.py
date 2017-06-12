@@ -16,7 +16,7 @@ def find_bck(remote_conn):
     cmd = 'backup-manager/show'
     output = mymod.send_command(remote_conn, cmd)
     backups = []
-    
+
     buf=StringIO.StringIO(output)
 
     lines = buf.read().split("\n")
@@ -50,7 +50,7 @@ def main():
         if backups:
             if len(backups) >= 10:
 
-                #delete first backup
+                #delete first backup from flash on OLT to free space (max 10 files allowed)
                 delete_bck = "backup-manager/remove --local-file=" + backups[0]
                 mymod.send_command(remote_conn, delete_bck)
             else:
@@ -62,13 +62,13 @@ def main():
 
         last_bck = find_bck(remote_conn)[-1]
 
-       #upload to TFTP server 
+       #upload to TFTP server
         download_bck = "backup-manager/export --local-file=" + last_bck + " --server-ip=" + TFTP + " --server-port=69"
         mymod.send_command(remote_conn, download_bck)
-        
+
         src_file = "/srv/tftp/" + last_bck
         dst_file = "/home/rancid/olt/me4600-olt/backup/" + last_bck
-        
+
         print "Copping file %s to backup directory\n" % last_bck
         try:
             shutil.copyfile(src_file, dst_file)
