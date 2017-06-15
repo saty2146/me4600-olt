@@ -90,6 +90,27 @@ class Olt:
         else:
             pass
 
+    def find_bck(self, remote_conn):
+
+        cmd = 'backup-manager/show'
+        output = self.send_command(remote_conn, cmd)
+        backups = []
+
+        buf=StringIO.StringIO(output)
+
+        lines = buf.read().split("\n")
+        file_regex = re.compile(r".*({}).*".format('file'))
+
+        for line in lines:
+            mo_bck = file_regex.search(line)
+            if mo_bck:
+                filename = mo_bck.group().split('|')[1].strip()
+                backups.append(filename)
+            else:
+                pass
+
+        return backups
+
     def find_next_onu(self, remote_conn):
 
         self.nextonu = 0
