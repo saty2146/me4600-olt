@@ -92,4 +92,4 @@ ENV/
 onu_template.cfg
 creds.py
 backup/
-creds.py
+*swp
