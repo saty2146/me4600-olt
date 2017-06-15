@@ -32,7 +32,6 @@ slnecnice_3etapa_B1_B2 = {
     }
 
 shc3_olt_pon7 = {
-        'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.7',
         'profileID': '3',
