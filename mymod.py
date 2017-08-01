@@ -87,6 +87,7 @@ class Olt:
             self.mgmtUP = profile['mgmtUP']
             self.igmpUP = profile['igmpUP']
             self.pppoeUP = profile['pppoeUP']
+            self.mcastPKG = profile['mcastPKG']
         else:
             pass
 
@@ -274,7 +275,9 @@ class Olt:
         add_pppoe = "remote-eq/onu/services/add --serviceID=" + self.pppoeID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
         add_igmp = "remote-eq/onu/services/add  --serviceID=" + self.igmpID + " --port=" + self.pon +  " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
         add_mcast = "remote-eq/onu/services/add --serviceID=" + self.mcastID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --admin=enable --name=iptv-multicast --serviceID-onu=4"
-        add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" + onuid + " --port=" + self.pon + " --slot=" + self.slot + " --serviceID-onu=3 --pkg-id=1"
+        add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" +
+        onuid + " --port=" + self.pon + " --slot=" + self.slot + "
+        --serviceID-onu=3 --pkg-id=" + self.mcastPKG
 
         return (create_onu,
                 add_mgmt,
