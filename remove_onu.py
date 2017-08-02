@@ -14,10 +14,10 @@ def main():
 
         onu_id, profile_id = myolt.find_onu_id(remote_conn, sn)
         cl_srv = myolt.find_onu_services(remote_conn, onu_id)
-        
+
         print ("Deleting services ...")
         for srv_id in reversed(sorted(cl_srv.keys())):
-            print srv_id
+      #      print srv_id
             myolt.remove_onu_service(remote_conn, onu_id, srv_id)
 
         print ("Removing ONU ...")

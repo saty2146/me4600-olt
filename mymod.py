@@ -16,7 +16,7 @@ def check_arg(args=None):
     """Command line argumnet parser function"""
 
     olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4']
-    profiles = ['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8']
+    profiles = ['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8','mileticova_60_1vl','mileticova_60_2vl']
     parser = argparse.ArgumentParser(description='OLT PON COMMAND LINE UTILITY')
     mand = parser.add_argument_group(title='mandatory arguments')
     mand.add_argument('-o', '--olt', choices = olts, help=', '.join(olts), metavar='', required='True')
@@ -59,6 +59,10 @@ def olt_profile(check_arg):
         profile = shc3_olt_pon7
     elif profile_arg == 'shc3_olt_pon8':
         profile = shc3_olt_pon8
+    elif profile_arg == 'mileticova_60_1vl':
+        profile = mileticova_60_1vl
+    elif profile_arg == 'mileticova_60_2vl':
+        profile = mileticova_60_2vl
     else:
         profile = profile_arg
         print ("No Object profile specified")
@@ -236,7 +240,7 @@ class Olt:
         buf=StringIO.StringIO(output)
 
         lines = buf.read().split("\n")
-        srv_regex = re.compile(r".*\(\d\).*")
+        srv_regex = re.compile(r".*\(\d+\).*")
         for line in lines[3:]:
             mo_srv = srv_regex.search(line)
             if mo_srv:
@@ -275,9 +279,7 @@ class Olt:
         add_pppoe = "remote-eq/onu/services/add --serviceID=" + self.pppoeID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
         add_igmp = "remote-eq/onu/services/add  --serviceID=" + self.igmpID + " --port=" + self.pon +  " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
         add_mcast = "remote-eq/onu/services/add --serviceID=" + self.mcastID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --admin=enable --name=iptv-multicast --serviceID-onu=4"
-        add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" +
-        onuid + " --port=" + self.pon + " --slot=" + self.slot + "
-        --serviceID-onu=3 --pkg-id=" + self.mcastPKG
+        add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" + onuid + " --port=" + self.pon + " --slot=" + self.slot + " --serviceID-onu=3 --pkg-id=" + self.mcastPKG
 
         return (create_onu,
                 add_mgmt,
