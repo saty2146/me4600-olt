@@ -2,8 +2,8 @@
 """
 Define basic parameter IDs for objects
 """
-
-mileticova_60_1vl = {
+objects = {
+        'mileticova_60_1vl': {
         'host': '10.4.1.150',
         'slot': '2',
         'pon': 'pon.10',
@@ -16,9 +16,9 @@ mileticova_60_1vl = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'2',
-    }
+    },
 
-mileticova_60_2vl = {
+        'mileticova_60_2vl': {
         'host': '10.4.1.150',
         'slot': '2',
         'pon': 'pon.11',
@@ -31,9 +31,9 @@ mileticova_60_2vl = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'2',
-    }
+    },
 
-primyte_1etapa_1vl = {
+        'primyte_1etapa_1vl': {
         'host': '192.168.82.19',
         'slot': '1',
         'pon': 'pon.1',
@@ -46,9 +46,9 @@ primyte_1etapa_1vl = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-slnecnice_3etapa_B1_B2 = {
+        'slnecnice_3etapa_B1_B2': {
         'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.1',
@@ -61,9 +61,9 @@ slnecnice_3etapa_B1_B2 = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-shc3_olt_pon8 = {
+        'shc3_olt_pon8': {
         'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.8',
@@ -76,9 +76,9 @@ shc3_olt_pon8 = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-slnecnice_3etapa_B3_B4 = {
+        'slnecnice_3etapa_B3_B4': {
         'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.2',
@@ -91,9 +91,9 @@ slnecnice_3etapa_B3_B4 = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-slnecnice_3etapa_B5_B6 = {
+        'slnecnice_3etapa_B5_B6': {
         'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.3',
@@ -106,9 +106,9 @@ slnecnice_3etapa_B5_B6 = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-slnecnice_3etapa_C1_C2 = {
+        'slnecnice_3etapa_C1_C2': {
         'host': '192.168.35.51',
         'slot': '1',
         'pon': 'pon.4',
@@ -121,9 +121,9 @@ slnecnice_3etapa_C1_C2 = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-dominant = {
+        'dominant': {
         'host': '192.168.35.50',
         'slot': '1',
         'pon': 'pon.7',
@@ -136,9 +136,9 @@ dominant = {
         'igmpUP':'1',
         'pppoeUP':'6',
         'mcastPKG':'1',
-    }
+    },
 
-jegeho_dole = { 
+        'jegeho_dole': { 
         'host': '10.4.1.150',
         'slot': '3',
         'pon': 'pon.7',
@@ -151,9 +151,9 @@ jegeho_dole = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
-    }
+    },
 
-jegeho_hore = { 
+        'jegeho_hore': { 
         'host': '10.4.1.150',
         'slot': '3',
         'pon': 'pon.8',
@@ -167,3 +167,4 @@ jegeho_hore = {
         'pppoeUP':'4',
         'mcastPKG':'1',
     }
+}

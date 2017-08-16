@@ -16,7 +16,8 @@ def check_arg(args=None):
     """Command line argumnet parser function"""
 
     olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4']
-    profiles = ['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8','mileticova_60_1vl','mileticova_60_2vl']
+#    profiles = ['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','slnecnice_3etapa_B5_B6','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8','mileticova_60_1vl','mileticova_60_2vl']
+    profiles = [name for name in objects.keys()]
     parser = argparse.ArgumentParser(description='OLT PON COMMAND LINE UTILITY')
     mand = parser.add_argument_group(title='mandatory arguments')
     mand.add_argument('-o', '--olt', choices = olts, help=', '.join(olts), metavar='', required='True')
@@ -44,25 +45,27 @@ def olt_profile(check_arg):
         print ("No OLT specified")
 
     if profile_arg == 'dominant':
-        profile = dominant
+        profile = objects['dominant']
     elif profile_arg == 'jegeho_dole':
-        profile = jegeho_dole
+        profile = objects['jegeho_dole']
     elif profile_arg == 'jegeho_hore':
-        profile = jegeho_hore
+        profile = objects['jegeho_hore']
     elif profile_arg == 'slnecnice_3etapa_B1_B2':
-        profile = slnecnice_3etapa_B1_B2
+        profile = objects['slnecnice_3etapa_B1_B2']
     elif profile_arg == 'slnecnice_3etapa_B3_B4':
-        profile = slnecnice_3etapa_B3_B4
+        profile = objects['slnecnice_3etapa_B3_B4']
+    elif profile_arg == 'slnecnice_3etapa_B5_B6':
+        profile = objects['slnecnice_3etapa_B5_B6']
     elif profile_arg == 'primyte_1etapa_1vl':
-        profile = primyte_1etapa_1vl
+        profile = objects['primyte_1etapa_1vl']
     elif profile_arg == 'shc3_olt_pon7':
-        profile = shc3_olt_pon7
+        profile = objects['shc3_olt_pon7']
     elif profile_arg == 'shc3_olt_pon8':
-        profile = shc3_olt_pon8
+        profile = objects['shc3_olt_pon8']
     elif profile_arg == 'mileticova_60_1vl':
-        profile = mileticova_60_1vl
+        profile = objects['mileticova_60_1vl']
     elif profile_arg == 'mileticova_60_2vl':
-        profile = mileticova_60_2vl
+        profile = objects['mileticova_60_2vl']
     else:
         profile = profile_arg
         print ("No Object profile specified")
