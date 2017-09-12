@@ -15,8 +15,7 @@ from creds import *
 def check_arg(args=None):
     """Command line argumnet parser function"""
 
-    olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4']
-#    profiles = ['dominant','jegeho_dole','jegeho_hore','slnecnice_3etapa_B1_B2','slnecnice_3etapa_B3_B4','slnecnice_3etapa_B5_B6','primyte_1etapa_1vl','shc3_olt_pon7','shc3_olt_pon8','mileticova_60_1vl','mileticova_60_2vl']
+    olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4', 'olt_kancel']
     profiles = [name for name in objects.keys()]
     parser = argparse.ArgumentParser(description='OLT PON COMMAND LINE UTILITY')
     mand = parser.add_argument_group(title='mandatory arguments')
@@ -24,16 +23,17 @@ def check_arg(args=None):
     mand.add_argument('-p', '--profile', choices = profiles, help=', '.join(profiles), metavar='', required='True')
     opt = parser.add_argument_group("mandatory arguments only for add_onu, remove_onu")
     opt.add_argument('-s', '--sn', help='ONU serial number', metavar='', nargs="?")
+    opt.add_argument('-l', '--loc', help='ONU location', metavar='', nargs="?")
 
     args = parser.parse_args(args)
 
-    #print (args.olt, args.profile, args.sn)
-    return (args.olt, args.profile, args.sn)
+    print (args.olt, args.profile, args.sn, args.loc)
+    return (args.olt, args.profile, args.sn, args.loc)
 
 def olt_profile(check_arg):
     """OLT and object profile function"""
 
-    olt_arg, profile_arg, sn_arg = check_arg(sys.argv[1:])
+    olt_arg, profile_arg, sn, loc = check_arg(sys.argv[1:])
     
     if olt_arg == 'olt_nova_mytna':
         olt = olt_nova_mytna
@@ -41,6 +41,8 @@ def olt_profile(check_arg):
         olt = olt_shc3
     elif olt_arg == 'olt_dc4':
         olt = olt_dc4
+    elif olt_arg == 'olt_kancel':
+        olt = olt_kancel
     else:
         print ("No OLT specified")
 
@@ -66,11 +68,13 @@ def olt_profile(check_arg):
         profile = objects['mileticova_60_1vl']
     elif profile_arg == 'mileticova_60_2vl':
         profile = objects['mileticova_60_2vl']
+    elif profile_arg == 'kancel':
+        profile = objects['kancel']
     else:
         profile = profile_arg
         print ("No Object profile specified")
     
-    return (olt, profile, sn_arg)
+    return (olt, profile, sn, loc)
 
 class Olt:
  
@@ -126,6 +130,7 @@ class Olt:
 
         cmd = "remote-eq/discovery/show --slot=" + self.slot + " --port=" + self.pon
         output = self.send_command(remote_conn, cmd)
+        time.sleep(1)
 
         buf=StringIO.StringIO(output)
 
@@ -146,7 +151,7 @@ class Olt:
         else:
             onu_id_list.sort(key=int)
             self.nextonu = onu_id_list[-1] + 1
-
+        
         return self.nextonu
 
     def send_command(self, remote_conn, cmd=''):
@@ -159,7 +164,7 @@ class Olt:
         cmd = cmd.rstrip()
         remote_conn.send(cmd + '\n')
         time.sleep(1)
-        output = remote_conn.recv(9000)
+        output = remote_conn.recv(50000)
         buf=StringIO.StringIO(output)
         line = buf.read().split("\n")
         row = line[-2].split('|')
@@ -272,12 +277,13 @@ class Olt:
         #print (cmd)
         output = self.send_command(remote_conn, cmd)
 
-    def create_commands(self, sn, onu_id):
+    def create_commands(self, sn, loc, onu_id):
 
         sn = sn
         onuid = str(onu_id)
 
         create_onu = "remote-eq/discovery/create --serial-number=" + sn + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --admin=enable --profileID=" + self.profileID + " --register-type=serial-number --sw-upgrade-mode=auto"
+        add_loc = "/remote-eq/onu/system/config --location=" + loc + " --port=" + self.pon +  " --slot=" + self.slot + " --onuID=" + onuid
         add_mgmt = "remote-eq/onu/services/add --serviceID=" + self.mgmtID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.mgmtUP + " --admin=enable --ip-mgmt=enable --name=ip-mgmt --serviceID-onu=1"
         add_pppoe = "remote-eq/onu/services/add --serviceID=" + self.pppoeID + " --port=" + self.pon + " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.pppoeUP + " --admin=enable --name=internet-pppoe --serviceID-onu=2"
         add_igmp = "remote-eq/onu/services/add  --serviceID=" + self.igmpID + " --port=" + self.pon +  " --slot=" + self.slot + " --onuID=" + onuid + " --add-onu-port=veip.1 --encryption=disable --upstream-dba-profile-id=" + self.igmpUP + " --admin=enable --name=iptv-igmp --serviceID-onu=3"
@@ -285,6 +291,7 @@ class Olt:
         add_mcast_pkg = "remote-eq/onu/services/mcast-package/create --onuID=" + onuid + " --port=" + self.pon + " --slot=" + self.slot + " --serviceID-onu=3 --pkg-id=" + self.mcastPKG
 
         return (create_onu,
+                add_loc,
                 add_mgmt,
                 add_pppoe,
                 add_igmp,
@@ -299,6 +306,7 @@ def find_onu_sn(remote_conn, slot, pon):
     output = send_command(remote_conn, cmd)
 
     buf=StringIO.StringIO(output)
+    print (buf)
 
     lines = buf.read().split("\n")
     sn_regex = re.compile(r".*({}).*".format('PON'))

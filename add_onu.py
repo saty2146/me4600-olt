@@ -12,9 +12,9 @@ from myobject import *
 
 def main():
 
-    olt, profile, sn = mymod.olt_profile(mymod.check_arg)
+    olt, profile, sn, loc = mymod.olt_profile(mymod.check_arg)
 
-    if sn is not None:
+    if sn is not None and loc is not None:
         myolt = mymod.Olt(olt, profile)
         ssh = myolt.connect()
         remote_conn = ssh.invoke_shell()
@@ -22,10 +22,11 @@ def main():
 
         onu_id = myolt.find_next_onu(remote_conn)
         
-        create_onu, add_mgmt, add_pppoe, add_igmp, add_mcast, add_mcast_pkg = myolt.create_commands(sn, onu_id)
+        create_onu, add_loc, add_mgmt, add_pppoe, add_igmp, add_mcast, add_mcast_pkg = myolt.create_commands(sn, loc, onu_id)
         
         
         myolt.send_command(remote_conn, create_onu)
+        myolt.send_command(remote_conn, add_loc,)
         myolt.send_command(remote_conn, add_mgmt)
         myolt.send_command(remote_conn, add_pppoe)
         myolt.send_command(remote_conn, add_igmp)
@@ -34,7 +35,7 @@ def main():
       
         remote_conn.close()
     else:
-        print ("!!! No ONU SN specified !!!")
+        print ("!!! No ONU SN or LOCATION specified !!!")
 
 if __name__ == "__main__":
     main()

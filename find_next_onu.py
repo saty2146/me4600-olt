@@ -4,7 +4,7 @@ import mymod
 
 def main():
     
-    olt, profile, sn = mymod.olt_profile(mymod.check_arg)
+    olt, profile, sn, loc = mymod.olt_profile(mymod.check_arg)
     myolt = mymod.Olt(olt, profile)
     ssh = myolt.connect()
     remote_conn = ssh.invoke_shell()

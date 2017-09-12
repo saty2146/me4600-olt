@@ -4,7 +4,7 @@ import mymod
 
 def main():
 
-    olt, profile, sn = mymod.olt_profile(mymod.check_arg)
+    olt, profile, sn, loc = mymod.olt_profile(mymod.check_arg)
 
     if sn is not None:
         myolt = mymod.Olt(olt, profile)

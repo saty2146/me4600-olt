@@ -3,6 +3,21 @@
 Define basic parameter IDs for objects
 """
 objects = {
+        'kancel': {
+        'host': '192.168.35.53',
+        'slot': '1',
+        'pon': 'pon.1',
+        'profileID': '3',
+        'pppoeID': '1',
+        'mgmtID': '4',
+        'igmpID': '2',
+        'mcastID': '3',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+        'mcastPKG':'1',
+    },
+
         'mileticova_60_1vl': {
         'host': '10.4.1.150',
         'slot': '2',
