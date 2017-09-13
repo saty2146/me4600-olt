@@ -46,9 +46,9 @@ def create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbri
         'mgmt': { 'name': name + '-mng-vlan' + mgmt_vlan,
                   'uni-ctag': mgmt_vlan,
                   'uni-stag': mgmt_vlan,
-#                  'uplink-lags': '1',
+                  'uplink-lags': '1',
                   'downlink-ports': gpon_ports,
-                  'uplink-ports': '1.5',
+#                  'uplink-ports': '1.5',
                   'type': macbridge,
                   'igmp': 'disable',
                   'mc-flood': 'disable',
@@ -57,9 +57,9 @@ def create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbri
         'igmp': { 'name': name + '-igmp',
                   'uni-ctag': '40',
                   'uni-stag': igmp_vlan,
-#                  'uplink-lags': '1',
+                  'uplink-lags': '1',
                   'downlink-ports': gpon_ports,
-                  'uplink-ports': '1.5',
+#                  'uplink-ports': '1.5',
                   'type': 'unicast',
                   'igmp': 'enable',
                   'mc-flood': 'disable',
@@ -68,9 +68,9 @@ def create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbri
         'pppoe': { 'name': name + '-pppoe',
                    'uni-ctag': '20',
                    'uni-stag': pppoe_vlan,
-#                   'uplink-lags': '1',
+                   'uplink-lags': '1',
                    'downlink-ports': gpon_ports,
-                   'uplink-ports': '1.5',
+#                   'uplink-ports': '1.5',
                    'type': macbridge,
                    'igmp': 'disable',
                    'mc-flood': 'enable',
@@ -109,10 +109,10 @@ def find_service_id(output, srv_list):
 
 def create_service(srv):
 
-#    service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-lags=" + srv['uplink-lags'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
+    service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-lags=" + srv['uplink-lags'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
     
 
-    service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-ports=" + srv['uplink-ports'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
+#    service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-ports=" + srv['uplink-ports'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
 
     return service
 
