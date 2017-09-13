@@ -14,10 +14,11 @@ def check_arg(args=None):
     mand = parser.add_argument_group(title='mandatory arguments')
     mand.add_argument('-o', '--olt', choices = olts, help=', '.join(olts), metavar='', required='True')
     mand.add_argument('-n', '--name', help='name of profile will be used as prefix', metavar='', required='True')
-    mand.add_argument('-m', '--mgmt_vlan', help='mgmt vlan (uni-ctag = uni-stag)', metavar='', required='True')
-    mand.add_argument('-i', '--igmp_vlan', help='igmp vlan (uni-stag)', metavar='', required='True')
-    mand.add_argument('-p', '--pppoe_vlan', help='pppoe vlan (uni-stag)', metavar='', required='True')
     mand.add_argument('-g', '--gpon_ports', help='gpon ports (format: slot.port: 1.1,1.2)', metavar='', required='True')
+    opt = parser.add_argument_group(title='optional arguments')
+    opt.add_argument('-m', '--mgmt_vlan', help='mgmt vlan (uni-ctag = uni-stag)', metavar='', nargs="?")
+    opt.add_argument('-i', '--igmp_vlan', help='igmp vlan (uni-stag)', metavar='', nargs="?")
+    opt.add_argument('-p', '--pppoe_vlan', help='pppoe vlan (uni-stag)', metavar='', nargs="?")
     args = parser.parse_args(args)
     return (args.olt, args.name, args.mgmt_vlan, args.igmp_vlan, args.pppoe_vlan, args.gpon_ports)
 
@@ -41,55 +42,48 @@ def create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbri
     """
     Create basic network services
     """
+    
+    parameters = {}
 
-    parameters = {
-        'mgmt': { 'name': name + '-mng-vlan' + mgmt_vlan,
-                  'uni-ctag': mgmt_vlan,
-                  'uni-stag': mgmt_vlan,
-                  'uplink-lags': '1',
-                  'downlink-ports': gpon_ports,
-#                  'uplink-ports': '1.5',
-                  'type': macbridge,
-                  'igmp': 'disable',
-                  'mc-flood': 'disable',
-                  'mc-proxy': 'disable'
-                  },
-        'igmp': { 'name': name + '-igmp',
-                  'uni-ctag': '40',
-                  'uni-stag': igmp_vlan,
-                  'uplink-lags': '1',
-                  'downlink-ports': gpon_ports,
-#                  'uplink-ports': '1.5',
-                  'type': 'unicast',
-                  'igmp': 'enable',
-                  'mc-flood': 'disable',
-                  'mc-proxy': 'disable'
-                  },
-        'pppoe': { 'name': name + '-pppoe',
-                   'uni-ctag': '20',
-                   'uni-stag': pppoe_vlan,
-                   'uplink-lags': '1',
-                   'downlink-ports': gpon_ports,
-#                   'uplink-ports': '1.5',
-                   'type': macbridge,
-                   'igmp': 'disable',
-                   'mc-flood': 'enable',
-                  'mc-proxy': 'disable'
-
-#MCAST SERVICE ALREADY DEFINED ON OLT
-#    'mcast': {'name': 'iptv-multicast',
-#              'uni-ctag': '99',
-#              'uni-stag': '99',
-#              'uplink-lags': '1',
-#              'downlink-ports': '1.1',
-#              'uplink-ports': '1.5',
-#              'type': 'multicast',
-#              'igmp': 'disable',
-#              'mc-flood': 'disable',
-#              'mc-proxy': 'enable'
-#              },
-        }
-    }
+    if mgmt_vlan is not None:
+        parameters['mgmt'] = {
+                'name': name + '-mng-vlan' + mgmt_vlan,
+                'uni-ctag': mgmt_vlan,
+                'uni-stag': mgmt_vlan,
+                'uplink-lags': '1',
+                'downlink-ports': gpon_ports,
+#                'uplink-ports': '1.5',
+                'type': macbridge,
+                'igmp': 'disable',
+                'mc-flood': 'disable',
+                'mc-proxy': 'disable'
+                }
+    if igmp_vlan is not None: 
+        parameters['igmp'] = {
+                'name': name + '-igmp',
+                'uni-ctag': '40',
+                'uni-stag': igmp_vlan,
+                'uplink-lags': '1',
+                'downlink-ports': gpon_ports,
+#                'uplink-ports': '1.5',
+                'type': 'unicast',
+                'igmp': 'enable',
+                'mc-flood': 'disable',
+                'mc-proxy': 'disable'
+                }
+    if pppoe_vlan is not None:
+        parameters['pppoe'] = {
+                'name': name + '-pppoe',
+                'uni-ctag': '20',
+                'uni-stag': pppoe_vlan,
+                'uplink-lags': '1',
+                'downlink-ports': gpon_ports,
+#                'uplink-ports': '1.5',
+                'type': macbridge,
+                'igmp': 'disable',
+                'mc-flood': 'enable',
+                'mc-proxy': 'disable'
+                }
 
     return parameters
 
@@ -109,9 +103,10 @@ def find_service_id(output, srv_list):
 
 def create_service(srv):
 
+# if LAG is defined as UPLINK PORT
     service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-lags=" + srv['uplink-lags'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
     
-
+# if ETH is defined as UPLINK PORT
 #    service = "/services/create --serviceName=" + srv['name'] + " --uni-ctag=" + srv['uni-ctag'] + " --nni-stag=" + srv['uni-stag'] + " --type=" + srv['type'] + " --stacked=disable --mc-flood=" + srv['mc-flood'] + " --dhcp-v4=disable --dhcp-v6=disable" + " --pppoe=disable" +" --igmp=" + srv['igmp'] + " --dai=disable --mc-proxy=" + srv['mc-proxy'] +  " --add-uplink-ports=" + srv['uplink-ports'] + " --add-downlink-ports=" + srv['downlink-ports'] + " --admin=enable" 
 
     return service
@@ -119,14 +114,16 @@ def create_service(srv):
 
 def main():
     olt_arg, name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports = check_arg()
+    print olt_arg, name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports
     olt, macbridge = choose_olt(olt_arg)
     myolt = mymod.Olt(olt)
     ssh = myolt.connect()
     remote_conn = ssh.invoke_shell()
     myolt.send_command(remote_conn)
     parameters = create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbridge)
+    print parameters
 
-    srv_list = [parameters['mgmt']['name'], parameters['igmp']['name'], parameters['pppoe']['name']]
+    srv_list = [parameters[key]['name'] for key in parameters.keys()]
 
     for key in parameters.keys():
         add_srv = create_service(parameters[key])
@@ -135,7 +132,6 @@ def main():
 
     output = myolt.send_command(remote_conn,"services/show")
     srv_ids = find_service_id(output, srv_list)
-    print srv_ids
 
     remote_conn.close()
 
