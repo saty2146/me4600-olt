@@ -27,7 +27,6 @@ def check_arg(args=None):
 
     args = parser.parse_args(args)
 
-    print (args.olt, args.profile, args.sn, args.loc)
     return (args.olt, args.profile, args.sn, args.loc)
 
 def olt_profile(check_arg):
@@ -167,9 +166,11 @@ class Olt:
         output = remote_conn.recv(50000)
         buf=StringIO.StringIO(output)
         line = buf.read().split("\n")
-        row = line[-2].split('|')
-
-        is_error = next((s for s in row if ('Error' in s or 'ERR' in s)), None)
+        for row in line:
+            row = row.split('|')
+            is_error = next((s for s in row if ('Error' in s or 'ERR' in s)), None)
+            if is_error:
+                break
 
         if is_error:
             print (', '.join(row))
