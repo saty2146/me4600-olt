@@ -81,7 +81,7 @@ def create_parameters(name, mgmt_vlan, igmp_vlan, pppoe_vlan, gpon_ports, macbri
 #                'uplink-ports': '1.5',
                 'type': macbridge,
                 'igmp': 'disable',
-                'mc-flood': 'enable',
+                'mc-flood': 'disable',
                 'mc-proxy': 'disable'
                 }
 

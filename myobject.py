@@ -209,5 +209,19 @@ objects = {
         'igmpUP':'1',
         'pppoeUP':'4',
         'mcastPKG':'1',
+    },
+        'blumental_1etapa': {
+        'host': '192.168.82.19',
+        'slot': '1',
+        'pon': 'pon.3',
+        'profileID': '3',
+        'pppoeID': '5',
+        'mgmtID': '6',
+        'igmpID': '2',
+        'mcastID': '1',
+        'mgmtUP':'1',
+        'igmpUP':'1',
+        'pppoeUP':'4',
+        'mcastPKG':'1',
     }
 }
