@@ -132,6 +132,7 @@ def main():
 
     output = myolt.send_command(remote_conn,"services/show")
     srv_ids = find_service_id(output, srv_list)
+    print srv_ids
 
     remote_conn.close()
 
