@@ -12,15 +12,16 @@ from myobject import *
 from creds import *
 
 
+OLT = [name for name in olts.keys()]
+PROFILE = [name for name in objects.keys()]
+
 def check_arg(args=None):
     """Command line argumnet parser function"""
 
-    olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4', 'olt_kancel']
-    profiles = [name for name in objects.keys()]
     parser = argparse.ArgumentParser(description='OLT PON COMMAND LINE UTILITY')
     mand = parser.add_argument_group(title='mandatory arguments')
-    mand.add_argument('-o', '--olt', choices = olts, help=', '.join(olts), metavar='', required='True')
-    mand.add_argument('-p', '--profile', choices = profiles, help=', '.join(profiles), metavar='', required='True')
+    mand.add_argument('-o', '--olt', choices = OLT, help=', '.join(OLT), metavar='', required='True')
+    mand.add_argument('-p', '--profile', choices = PROFILE, help=', '.join(PROFILE), metavar='', required='True')
     opt = parser.add_argument_group("mandatory arguments only for add_onu, remove_onu")
     opt.add_argument('-s', '--sn', help='ONU serial number', metavar='', nargs="?")
     opt.add_argument('-l', '--loc', help='ONU location', metavar='', nargs="?")
@@ -31,44 +32,16 @@ def check_arg(args=None):
 
 def olt_profile(check_arg):
     """OLT and object profile function"""
-
+   
     olt_arg, profile_arg, sn, loc = check_arg(sys.argv[1:])
     
-    if olt_arg == 'olt_nova_mytna':
-        olt = olt_nova_mytna
-    elif olt_arg == 'olt_shc3':
-        olt = olt_shc3
-    elif olt_arg == 'olt_dc4':
-        olt = olt_dc4
-    elif olt_arg == 'olt_kancel':
-        olt = olt_kancel
+    if olt_arg in OLT:
+        olt = olts[olt_arg]
     else:
         print ("No OLT specified")
 
-    if profile_arg == 'dominant':
-        profile = objects['dominant']
-    elif profile_arg == 'jegeho_dole':
-        profile = objects['jegeho_dole']
-    elif profile_arg == 'jegeho_hore':
-        profile = objects['jegeho_hore']
-    elif profile_arg == 'slnecnice_3etapa_B1_B2':
-        profile = objects['slnecnice_3etapa_B1_B2']
-    elif profile_arg == 'slnecnice_3etapa_B3_B4':
-        profile = objects['slnecnice_3etapa_B3_B4']
-    elif profile_arg == 'slnecnice_3etapa_B5_B6':
-        profile = objects['slnecnice_3etapa_B5_B6']
-    elif profile_arg == 'primyte_1etapa_1vl':
-        profile = objects['primyte_1etapa_1vl']
-    elif profile_arg == 'shc3_olt_pon7':
-        profile = objects['shc3_olt_pon7']
-    elif profile_arg == 'shc3_olt_pon8':
-        profile = objects['shc3_olt_pon8']
-    elif profile_arg == 'mileticova_60_1vl':
-        profile = objects['mileticova_60_1vl']
-    elif profile_arg == 'mileticova_60_2vl':
-        profile = objects['mileticova_60_2vl']
-    elif profile_arg == 'kancel':
-        profile = objects['kancel']
+    if profile_arg in PROFILE:
+        profile = objects[profile_arg]
     else:
         profile = profile_arg
         print ("No Object profile specified")
