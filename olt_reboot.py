@@ -5,13 +5,13 @@ import argparse
 import sys
 from creds import *
 
-def check_arg(args=None):
+OLT = [name for name in olts.keys()]
 
-    olts = ['olt_nova_mytna', 'olt_shc3', 'olt_dc4']
+def check_arg(args=None):
 
     parser = argparse.ArgumentParser(description='Cisco OLT rebooter')
     mand = parser.add_argument_group(title='mandatory arguments')
-    mand.add_argument('-o', '--olt', choices = olts, help=', '.join(olts), metavar='', required='True')
+    mand.add_argument('-o', '--olt', choices = olts, help=', '.join(OLT), metavar='', required='True')
 
     exgroup = parser.add_argument_group(title='one or the other')
     group = exgroup.add_mutually_exclusive_group(required=True)
@@ -29,12 +29,8 @@ def main():
     
     olt_arg, check, slot, reboot = check_arg(sys.argv[1:])
 
-    if olt_arg == 'olt_nova_mytna':
-        olt = olt_nova_mytna
-    elif olt_arg == 'olt_shc3':
-        olt = olt_shc3
-    elif olt_arg == 'olt_dc4':
-        olt = olt_dc4
+    if olt_arg in OLT:
+        olt = olts[olt_arg]
     else:
         print ("No OLT specified")
 
