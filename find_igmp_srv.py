@@ -14,22 +14,16 @@ def main():
 
         onu_id, profile_id = myolt.find_onu_id(remote_conn, sn)
         cl_srv = myolt.find_onu_services(remote_conn, onu_id)
-        print cl_srv
 
-        print ("Deleting services ...")
         for srv_id in reversed(sorted(cl_srv.keys())):
+            
+            print srv_id
             is_igmp = myolt.find_igmp_tag(remote_conn, onu_id, srv_id)
+            print is_igmp
 
-            if is_igmp:
-                myolt.change_upstream_profile(remote_conn, onu_id, srv_id)
-                myolt.remove_mcast_pkg(remote_conn, onu_id, srv_id)
-            else:
-                pass
 
-            myolt.remove_onu_service(remote_conn, onu_id, srv_id)
-
-        print ("Removing ONU ...")
-        myolt.remove_onu(remote_conn, onu_id)
+      #  print ("Removing ONU ...")
+      #  myolt.remove_onu(remote_conn, onu_id)
 #
         remote_conn.close()
     else:

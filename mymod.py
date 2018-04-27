@@ -239,10 +239,41 @@ class Olt:
 
         return cl_srv
 
+    def find_igmp_tag(self, remote_conn, onuid, srv_id):
+
+        is_igmp = False
+        cmd = "remote-eq/onu/services/show --slot=" + self.slot + " --port=" + self.pon + " --onuID=" + onuid + " --serviceID-onu=" + str(srv_id)
+        output = self.send_command(remote_conn, cmd)
+
+        buf=StringIO.StringIO(output)
+        lines = buf.read().split("\n")
+        igmp_regex = re.compile(r".*IGMP.*")
+        for line in lines:
+            mo_igmp = igmp_regex.search(line)
+            if mo_igmp:
+                is_igmp = True
+            else:
+                pass
+
+        return is_igmp
+
+    def change_upstream_profile(self, remote_conn, onuid, srv_id):
+
+        cmd = "remote-eq/onu/services/config --slot=" + self.slot + " --port=" + self.pon + " --onuID=" + onuid + " --serviceID-onu=" + str(srv_id) + " --upstream-dba-profile-id=5"
+
+        output = self.send_command(remote_conn, cmd)
+
     def remove_onu_service(self, remote_conn, onuid, srvid):
 
         cmd = "remote-eq/onu/services/remove --slot=" + self.slot + " --port=" + self.pon + " --onuID=" + str(onuid) + " --serviceID-onu=" + str(srvid)
         #print (cmd)
+        output = self.send_command(remote_conn, cmd)
+
+    def remove_mcast_pkg(self, remote_conn, onuid, srvid):
+
+        cmd = "remote-eq/onu/services/mcast-package/remove --slot=" + self.slot + " --port=" + self.pon + " --onuID=" + str(onuid) + " --serviceID-onu=" + str(srvid) + " --pkg-id=1"
+
+
         output = self.send_command(remote_conn, cmd)
 
     def remove_onu(self, remote_conn, onuid):

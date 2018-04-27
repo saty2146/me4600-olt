@@ -25,7 +25,7 @@ def find_service_id(output, srv_list):
     return srvs
 
 
-olt = olt_kancel
+olt = olts['olt_dc4']
 
 def main():
     myolt = mymod.Olt(olt)
